@@ -1,0 +1,112 @@
+---
+import Layout from '../../layouts/LayoutPrincipal.astro';
+import {
+  db,
+  Himnos as dataHimnos,
+  Jovenes,
+  Himnario,
+  Suplementario,
+} from 'astro:db';
+import BotonVolver from '../../components/ButtonBack.astro';
+import ChordsModal from '@/components/ChordsModal';
+import { eq } from 'astro:db';
+
+export const prerender = true;
+
+export const getStaticPaths = async () => {
+  const himnos = await db.select().from(dataHimnos);
+  return himnos.map((himno) => ({ params: { id: himno.id }, props: himno }));
+};
+
+const himno = Astro.props;
+const [numeroJovenes] = await db
+  .select()
+  .from(Jovenes)
+  .where(eq(Jovenes.himnoId, himno.id));
+
+const [numeroHimnario] = await db
+  .select()
+  .from(Himnario)
+  .where(eq(Himnario.himnoId, himno.id));
+
+const [numeroSuplementario] = await db
+  .select()
+  .from(Suplementario)
+  .where(eq(Suplementario.himnoId, himno.id));
+
+const hasChords = himno.acorde && himno.acorde.trim() !== '';
+const showHimnario = numeroHimnario
+  ? `Himnario: ${numeroHimnario.numero}`
+  : null;
+const showSuplementario = numeroSuplementario
+  ? `Suplementario: ${numeroSuplementario.numero}`
+  : null;
+const showJovenes = numeroJovenes ? `Jóvenes: ${numeroJovenes.numero}` : null;
+---
+
+<Layout background="bg-gradient-to-b from-slate-900 to-slate-700">
+  <div class="container mx-auto px-4 py-8">
+    <BotonVolver />
+    <div
+      class="max-w-2xl mx-auto bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-8 mt-8"
+    >
+      <h1 class="text-4xl font-bold text-white text-center mb-8">
+        {himno.titulo}
+      </h1>
+
+      <pre
+        class="text-white text-lg whitespace-pre-line mb-8 leading-relaxed">
+        {himno.letra}
+      </pre>
+
+      <div class="flex flex-col items-center space-y-6 mb-8">
+        <button
+          id="showChords"
+          class="px-6 py-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          data-chords={himno.acorde}
+          disabled={!hasChords}
+        >
+          Ver Acordes
+        </button>
+      </div>
+      <div class="flex justify-between text-white text-lg">
+        {
+          showHimnario && (
+            <div class="bg-slate-800 bg-opacity-50 p-4 rounded-lg shadow-md">
+              {showHimnario}
+            </div>
+          )
+        }
+        {
+          showJovenes && (
+            <div class="bg-slate-700 bg-opacity-50 p-4 rounded-lg shadow-md">
+              {showJovenes}
+            </div>
+          )
+        }
+        {
+          showSuplementario && (
+            <div class="bg-slate-700 bg-opacity-50 p-4 rounded-lg shadow-md">
+              {showSuplementario}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<ChordsModal client:load />
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const showChords = document.getElementById('showChords');
+    // Mostrar acordes
+    showChords.addEventListener('click', () => {
+      const chordsModal = document.querySelector('chords-modal');
+      const chords = showChords.getAttribute('data-chords');
+      chordsModal.setAttribute('is-open', 'true');
+      chordsModal.setAttribute('chords', chords);
+    });
+  });
+</script>

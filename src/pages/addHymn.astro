@@ -1,0 +1,27 @@
+---
+import LayoutPrincipal from '@/layouts/LayoutPrincipal.astro';
+import ButtonBack from '@/components/ButtonBack.astro';
+import FormAddHymn from '@/components/FormAddHymn';
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect('/signin');
+}
+---
+
+<LayoutPrincipal>
+  <div class="min-h-screen flex flex-col items-center w-full p-4">
+    <div class="w-full max-w-4xl">
+      <ButtonBack />
+
+      <h1 class="text-4xl font-bold text-center mb-8 text-white drop-shadow-lg">
+        Agregar Nuevo Himno
+      </h1>
+
+      <div
+        class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6 mb-8"
+      >
+        <FormAddHymn client:load />
+      </div>
+    </div>
+  </div>
+</LayoutPrincipal>
