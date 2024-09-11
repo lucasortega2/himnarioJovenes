@@ -1,6 +1,6 @@
 ---
-import { db, himnos } from 'astro:db';
-const himnal = await db.select().from(himnos);
+import { db, Himnos } from 'astro:db';
+const himnal = await db.select().from(Himnos);
 console.log(himnal);
 ---
 
