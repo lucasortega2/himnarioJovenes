@@ -1,0 +1,32 @@
+---
+import ButtonHome from '../components/ButtonHome.astro';
+import Layout from '../layouts/LayoutPrincipal.astro';
+import Favs from '../components/Favs';
+import {
+  db,
+  Himnos as dataHimnos,
+  Jovenes,
+  Himnario,
+  Suplementario,
+} from 'astro:db';
+
+const himnos = await db.select().from(dataHimnos);
+const jovenes = await db.select().from(Jovenes);
+const himnario = await db.select().from(Himnario);
+const suplementario = await db.select().from(Suplementario);
+---
+
+<Layout>
+  <div class="min-h-screen flex flex-col items-center w-full p-4">
+    <div class="w-full max-w-3xl">
+      <ButtonHome />
+      <Favs
+        client:load
+        himnos={himnos}
+        jovenes={jovenes}
+        himnario={himnario}
+        suplementario={suplementario}
+      />
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,33 @@
+---
+import LayoutPrincipal from '@/layouts/LayoutPrincipal.astro';
+import ButtonHome from '../components/ButtonHome.astro';
+import { db, Himnos as dataHimnos } from 'astro:db';
+import HymnManagementComponent from '@/components/HymnManagementComponent';
+
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect('/signin');
+}
+
+const himnos = await db.select().from(dataHimnos);
+---
+
+<LayoutPrincipal>
+  <div class="min-h-screen flex flex-col items-center w-full p-4">
+    <div class="w-full max-w-3xl">
+      <ButtonHome />
+      <div class="flex justify-between items-center mb-6 mt-8">
+        <h1 class="text-4xl font-bold text-white drop-shadow-lg">
+          Gestión de Himnos
+        </h1>
+        <a
+          href="/addHymn"
+          class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+        >
+          Agregar Himno
+        </a>
+      </div>
+      <HymnManagementComponent client:load initialHimnos={himnos} />
+    </div>
+  </div>
+</LayoutPrincipal>

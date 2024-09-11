@@ -1,0 +1,55 @@
+---
+import LayoutPrincipal from '@/layouts/LayoutPrincipal.astro';
+import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
+import ButtonBack from '@/components/ButtonBack.astro';
+import FormAddHymn from '@/components/FormAddHymn';
+const { id } = Astro.params;
+const formatId = Number(id);
+const himno = await db
+  .select()
+  .from(Himnos)
+  .where(eq(Himnos.id, formatId))
+  .get();
+
+if (!himno) {
+  return Astro.redirect('/404');
+}
+
+const [numeroJovenes] = await db
+  .select()
+  .from(Jovenes)
+  .where(eq(Jovenes.himnoId, himno.id));
+
+const [numeroHimnario] = await db
+  .select()
+  .from(Himnario)
+  .where(eq(Himnario.himnoId, himno.id));
+
+const [numeroSuplementario] = await db
+  .select()
+  .from(Suplementario)
+  .where(eq(Suplementario.himnoId, himno.id));
+---
+
+<LayoutPrincipal>
+  <div class="min-h-screen flex flex-col items-center w-full p-4">
+    <div class="w-full max-w-4xl">
+      <ButtonBack />
+      <h1 class="text-4xl font-bold text-center mb-8 text-white drop-shadow-lg">
+        Editar Himno
+      </h1>
+
+      <div
+        class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6 mb-8"
+      >
+        <FormAddHymn
+          client:load
+          himno={himno}
+          numeroJovenes={numeroJovenes}
+          numeroHimnario={numeroHimnario}
+          numeroSuplementario={numeroSuplementario}
+        />
+      </div>
+    </div>
+  </div>
+</LayoutPrincipal>

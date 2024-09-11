@@ -1,18 +1,48 @@
 ---
-import { db, Himnos } from 'astro:db';
-const himnal = await db.select().from(Himnos);
-console.log(himnal);
+import Layout from '../layouts/layoutPrincipal.astro';
+import Menu from '../components/Menu.astro';
+import ButtonAddHymn from '../components/ButtonAddHymn.astro';
+const user = Astro.locals.user;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<Layout>
+  <div class="w-full min-h-screen flex flex-col items-center relative">
+    <nav
+      class="w-full flex justify-between items-center p-4 absolute top-0 left-0"
+    >
+      <a href="/HymnManagement" class="z-10">
+        <ButtonAddHymn />
+      </a>
+      {
+        user && (
+          <form method="post" action="/api/signout" class="z-10">
+            <button
+              type="submit"
+              class="px-4 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+            >
+              Sign out
+            </button>
+          </form>
+        )
+      }
+    </nav>
+    <h1
+      class="text-4xl md:text-5xl font-bold text-white text-center tracking-wide drop-shadow-lg mt-32"
+    >
+      Himnario de jóvenes
+    </h1>
+    <div class="flex flex-col items-center justify-center w-full m-auto">
+      <Menu />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  h1 {
+    background: linear-gradient(to right, #f0f0f0, #ffffff);
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    line-height: 1.2;
+  }
+</style>
