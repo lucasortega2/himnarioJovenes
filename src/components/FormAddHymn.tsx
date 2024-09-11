@@ -1,13 +1,38 @@
 import { useEffect, useState } from 'react';
 
-const FormAddHymn = ({
+interface FormAddHymnProps {
+  himno?: {
+    id?: number;
+    titulo?: string;
+    letra?: string;
+    acorde?: string | null;
+  };
+  numeroJovenes?: {
+    himnoId?: number;
+    numero?: number;
+  };
+  numeroHimnario?: {
+    himnoId?: number;
+    numero?: number;
+  };
+  numeroSuplementario?: {
+    himnoId?: number;
+    numero?: number;
+  };
+}
+
+const FormAddHymn: React.FC<FormAddHymnProps> = ({
   himno,
   numeroJovenes,
   numeroHimnario,
   numeroSuplementario,
 }) => {
-  const [numero, setNumero] = useState('');
-  const [numero2, setNumero2] = useState('');
+  const [numero, setNumero] = useState<string | number>('');
+
+  const [numero2, setNumero2] = useState<string | number | undefined>(
+    undefined,
+  );
+
   const [himnario, setHimnario] = useState('seleccionar');
   const [himnario2, setHimnario2] = useState('seleccionar');
   const [titulo, setTitulo] = useState('');

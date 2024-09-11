@@ -5,11 +5,7 @@ import FormAddHymn from '@/components/FormAddHymn';
 import Layout from '@/layouts/Layout.astro';
 const { id } = Astro.params;
 const formatId = Number(id);
-const himno = await db
-  .select()
-  .from(Himnos)
-  .where(eq(Himnos.id, formatId))
-  .get();
+const [himno] = await db.select().from(Himnos).where(eq(Himnos.id, formatId));
 
 if (!himno) {
   return Astro.redirect('/404');
