@@ -1,5 +1,4 @@
 ---
-import Layout from '../../layouts/LayoutPrincipal.astro';
 import {
   db,
   Himnos as dataHimnos,
@@ -10,6 +9,7 @@ import {
 import BotonVolver from '../../components/ButtonBack.astro';
 import ChordsModal from '@/components/ChordsModal';
 import { eq } from 'astro:db';
+import Layout from '@/layouts/Layout.astro';
 
 export const prerender = true;
 

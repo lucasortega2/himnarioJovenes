@@ -1,8 +1,8 @@
 ---
-import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 import ButtonHome from '../components/ButtonHome.astro';
 import { db, Himnos as dataHimnos } from 'astro:db';
 import HymnManagementComponent from '@/components/HymnManagementComponent';
+import Layout from '@/layouts/Layout.astro';
 
 const user = Astro.locals.user;
 if (!user) {
@@ -12,7 +12,7 @@ if (!user) {
 const himnos = await db.select().from(dataHimnos);
 ---
 
-<LayoutPrincipal>
+<Layout>
   <div class="min-h-screen flex flex-col items-center w-full p-4">
     <div class="w-full max-w-3xl">
       <ButtonHome />
@@ -30,4 +30,4 @@ const himnos = await db.select().from(dataHimnos);
       <HymnManagementComponent client:load initialHimnos={himnos} />
     </div>
   </div>
-</LayoutPrincipal>
+</Layout>
