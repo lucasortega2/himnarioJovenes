@@ -1,4 +1,4 @@
-import lucia from '../../auth';
+import { lucia } from '@/auth';
 
 export async function POST(context): Promise<Response> {
   if (!context.locals.session) {

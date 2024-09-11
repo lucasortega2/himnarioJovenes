@@ -11,6 +11,7 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
   integrations: [db(), react(), tailwind()],
+  security: { checkOrigin: true },
   output: 'server',
   adapter: vercel(),
 });

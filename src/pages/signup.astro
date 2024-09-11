@@ -14,7 +14,11 @@ import LayoutPrincipal from '@/layouts/LayoutPrincipal.astro';
       class="w-full max-w-md bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-8"
     >
       <h1 class="text-3xl font-bold text-white text-center mb-6">Sign Up</h1>
-      <form class="space-y-6" method="POST" action="/api/signup">
+
+      <!-- Contenedor para mensajes de error -->
+      <p id="error-message" class="text-red-500 text-center mb-4 hidden"></p>
+
+      <form id="signup-form" class="space-y-6">
         <div>
           <label for="username" class="block text-sm font-medium text-white"
             >Username</label
@@ -54,4 +58,42 @@ import LayoutPrincipal from '@/layouts/LayoutPrincipal.astro';
       </p>
     </div>
   </div>
+
+  <!-- Script para manejar el envío del formulario y mostrar errores -->
+  <script>
+    document
+      .getElementById('signup-form')
+      .addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        const formData = new FormData(form);
+        const errorMessage = document.getElementById('error-message');
+
+        try {
+          const response = await fetch('/api/signup', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            console.log(response);
+
+            // Mostrar mensaje de error si el usuario ya existe
+            errorMessage.textContent =
+              result.message || 'An unexpected error occurred';
+            errorMessage.classList.remove('hidden');
+          } else {
+            // Redirigir si el registro es exitoso
+            window.location.href = '/HymnManagement';
+          }
+        } catch (error) {
+          // Mostrar mensaje de error en caso de fallo en la solicitud
+          errorMessage.textContent =
+            'An unexpected error occurred. Please try again.';
+          errorMessage.classList.remove('hidden');
+        }
+      });
+  </script>
 </LayoutPrincipal>

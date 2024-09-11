@@ -1,4 +1,4 @@
-import lucia from '../../auth';
+import { lucia } from '@/auth';
 import { db, eq, User } from 'astro:db';
 import { Argon2id } from 'oslo/password';
 export async function POST(context): Promise<Response> {
