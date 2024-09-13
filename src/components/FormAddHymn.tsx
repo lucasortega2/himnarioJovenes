@@ -65,7 +65,11 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
   }, [himnario]);
 
   return (
-    <form method="post" action="/api/addHymn/addHymn" className="space-y-4">
+    <form
+      method="post"
+      action={`${himno ? `/api/editHymn/${himno.id}/` : '/api/addHymn/addHymn'}`}
+      className="space-y-4"
+    >
       <div className="flex gap-4">
         <div className="flex-1">
           <label
