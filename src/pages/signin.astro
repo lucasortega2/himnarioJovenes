@@ -67,10 +67,11 @@ import Layout from '@/layouts/Layout.astro';
   <!-- Script para manejar el envío del formulario y mostrar errores -->
   <script>
     const form = document.getElementById('signin-form');
-
     const errorMessage = document.getElementById('error-message');
-    if (form instanceof HTMLFormElement)
+
+    if (form instanceof HTMLFormElement) {
       form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent default form submission
         const formData = new FormData(form);
 
         try {
@@ -79,12 +80,13 @@ import Layout from '@/layouts/Layout.astro';
             body: formData,
           });
 
-          if (!response.ok) {
-            const { error } = await response.json();
-            errorMessage.textContent = error || 'An unexpected error occurred';
-            errorMessage.classList.remove('hidden'); // Mostrar el mensaje de error
-          } else {
-            window.location.href = '/HymnManagement'; // Redirigir si el login es exitoso
+          const result = await response.json();
+
+          if (result.error) {
+            errorMessage.textContent = result.error;
+            errorMessage.classList.remove('hidden');
+          } else if (result.redirect) {
+            window.location.href = result.redirect;
           }
         } catch (error) {
           errorMessage.textContent =
@@ -92,5 +94,6 @@ import Layout from '@/layouts/Layout.astro';
           errorMessage.classList.remove('hidden');
         }
       });
+    }
   </script>
 </Layout>
