@@ -71,8 +71,6 @@ import Layout from '@/layouts/Layout.astro';
     const errorMessage = document.getElementById('error-message');
     if (form instanceof HTMLFormElement)
       form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
         const formData = new FormData(form);
 
         try {
