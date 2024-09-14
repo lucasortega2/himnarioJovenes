@@ -81,14 +81,23 @@ import Layout from '@/layouts/Layout.astro';
           });
 
           const result = await response.json();
+          console.log('Server response:', result); // Log the server response
 
           if (result.error) {
             errorMessage.textContent = result.error;
             errorMessage.classList.remove('hidden');
           } else if (result.redirect) {
+            console.log('Redirecting to:', result.redirect); // Log the redirect URL
             window.location.href = result.redirect;
+
+            // Add a fallback method for navigation
+            setTimeout(() => {
+              console.log('Fallback: using window.location.replace');
+              window.location.replace(result.redirect);
+            }, 100);
           }
         } catch (error) {
+          console.error('Fetch error:', error); // Log any fetch errors
           errorMessage.textContent =
             'An unexpected error occurred. Please try again.';
           errorMessage.classList.remove('hidden');
