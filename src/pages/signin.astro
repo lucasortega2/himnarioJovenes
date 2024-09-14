@@ -2,8 +2,8 @@
 import ButtonHome from '@/components/ButtonHome.astro';
 import Layout from '@/layouts/Layout.astro';
 const user = Astro.locals.user;
-if (!user) {
-  return Astro.redirect('/HymnManagement');
+if (user) {
+  return Astro.redirect('/signin');
 }
 ---
 
@@ -71,11 +71,12 @@ if (!user) {
   <!-- Script para manejar el envío del formulario y mostrar errores -->
   <script>
     const form = document.getElementById('signin-form');
-    const errorMessage = document.getElementById('error-message');
 
-    if (form instanceof HTMLFormElement) {
+    const errorMessage = document.getElementById('error-message');
+    if (form instanceof HTMLFormElement)
       form.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
+
         const formData = new FormData(form);
 
         try {
@@ -84,29 +85,18 @@ if (!user) {
             body: formData,
           });
 
-          const result = await response.json();
-          console.log('Server response:', result); // Log the server response
-
-          if (result.error) {
-            errorMessage.textContent = result.error;
-            errorMessage.classList.remove('hidden');
-          } else if (result.redirect) {
-            console.log('Redirecting to:', result.redirect); // Log the redirect URL
-            window.location.href = result.redirect;
-
-            // Add a fallback method for navigation
-            setTimeout(() => {
-              console.log('Fallback: using window.location.replace');
-              window.location.replace(result.redirect);
-            }, 100);
+          if (!response.ok) {
+            const { error } = await response.json();
+            errorMessage.textContent = error || 'An unexpected error occurred';
+            errorMessage.classList.remove('hidden'); // Mostrar el mensaje de error
+          } else {
+            window.location.href = '/HymnManagement'; // Redirigir si el login es exitoso
           }
         } catch (error) {
-          console.error('Fetch error:', error); // Log any fetch errors
           errorMessage.textContent =
             'An unexpected error occurred. Please try again.';
           errorMessage.classList.remove('hidden');
         }
       });
-    }
   </script>
 </Layout>
