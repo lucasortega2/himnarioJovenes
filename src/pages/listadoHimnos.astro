@@ -9,7 +9,7 @@ import {
   Jovenes,
   Suplementario,
 } from 'astro:db';
-
+export const prerender = true;
 const himnos = await db.select().from(dataHimnos);
 const himnario = await db.select().from(Himnario);
 const jovenes = await db.select().from(Jovenes);

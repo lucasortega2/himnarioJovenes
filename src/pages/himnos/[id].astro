@@ -4,33 +4,45 @@ import BotonVolver from '../../components/ButtonBack.astro';
 import ChordsModal from '@/components/ChordsModal';
 import { eq } from 'astro:db';
 import Layout from '@/layouts/Layout.astro';
+export const prerender = true;
+export const getStaticPaths = async () => {
+  const himnos = await db.select().from(Himnos);
+  const paths = await Promise.all(
+    himnos.map(async (himno) => {
+      const [numeroJovenes] = await db
+        .select()
+        .from(Jovenes)
+        .where(eq(Jovenes.himnoId, himno.id));
+      const [numeroHimnario] = await db
+        .select()
+        .from(Himnario)
+        .where(eq(Himnario.himnoId, himno.id));
+      const [numeroSuplementario] = await db
+        .select()
+        .from(Suplementario)
+        .where(eq(Suplementario.himnoId, himno.id));
+      return {
+        params: { id: himno.id },
+        props: {
+          himno,
+          numeroJovenes,
+          numeroHimnario,
+          numeroSuplementario,
+        },
+      };
+    }),
+  );
+  return paths;
+};
 
-// export const prerender = true;
+const { himno, numeroHimnario, numeroJovenes, numeroSuplementario } =
+  Astro.props;
 
-// export const getStaticPaths = async () => {
-//   const himnos = await db.select().from(dataHimnos);
-//   return himnos.map((himno) => ({ params: { id: himno.id }, props: himno }));
-// };
-const { id } = Astro.params;
-const formatId = Number(id);
-const [himno] = await db.select().from(Himnos).where(eq(Himnos.id, formatId));
+// const [himno] = await db.select().from(Himnos).where(eq(Himnos.id, formatId));
+console.log(himno);
 
-const [numeroJovenes] = await db
-  .select()
-  .from(Jovenes)
-  .where(eq(Jovenes.himnoId, formatId));
+const hasChords = himno && himno.acorde && himno.acorde.trim() !== '';
 
-const [numeroHimnario] = await db
-  .select()
-  .from(Himnario)
-  .where(eq(Himnario.himnoId, formatId));
-
-const [numeroSuplementario] = await db
-  .select()
-  .from(Suplementario)
-  .where(eq(Suplementario.himnoId, formatId));
-
-const hasChords = himno.acorde && himno.acorde.trim() !== '';
 const showHimnario = numeroHimnario
   ? `Himnario: ${numeroHimnario.numero}`
   : null;
@@ -47,19 +59,19 @@ const showJovenes = numeroJovenes ? `Jóvenes: ${numeroJovenes.numero}` : null;
       class="max-w-2xl mx-auto bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-8 mt-8"
     >
       <h1 class="text-4xl font-bold text-white text-center mb-8">
-        {himno.titulo}
+        {himno?.titulo}
       </h1>
 
       <pre
         class="text-white text-lg whitespace-pre-line mb-8 leading-relaxed">
-        {himno.letra}
+        {himno?.letra}
       </pre>
 
       <div class="flex flex-col items-center space-y-6 mb-8">
         <button
           id="showChords"
           class="px-6 py-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          data-chords={himno.acorde}
+          data-chords={himno?.acorde}
           disabled={!hasChords}
         >
           Ver Acordes
