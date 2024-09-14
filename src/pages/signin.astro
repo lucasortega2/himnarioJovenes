@@ -1,6 +1,10 @@
 ---
 import ButtonHome from '@/components/ButtonHome.astro';
 import Layout from '@/layouts/Layout.astro';
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect('/HymnManagement');
+}
 ---
 
 <Layout>
