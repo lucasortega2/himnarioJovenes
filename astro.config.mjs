@@ -12,6 +12,6 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [db(), react(), tailwind()],
   security: { checkOrigin: true },
-  output: 'hybrid',
+  output: 'server',
   adapter: vercel(),
 });

@@ -39,7 +39,6 @@ const { himno, numeroHimnario, numeroJovenes, numeroSuplementario } =
   Astro.props;
 
 // const [himno] = await db.select().from(Himnos).where(eq(Himnos.id, formatId));
-console.log(himno);
 
 const hasChords = himno && himno.acorde && himno.acorde.trim() !== '';
 
