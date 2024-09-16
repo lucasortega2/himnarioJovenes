@@ -28,7 +28,7 @@ const HimnoList = ({
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6">
+      <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6  ">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">
           {isFavoritesPage ? 'Himnos Favoritos' : 'Listado de Himnos'}
         </h2>
@@ -41,7 +41,7 @@ const HimnoList = ({
         />
 
         {currentHymns.length > 0 ? (
-          <ul className="space-y-3">
+          <ul className="space-y-3 h-[520px] h-min[600px]">
             {currentHymns.map((himno) => {
               const match = obtenerIdsYNumeros.find(
                 (item) => item.id === himno.id,
@@ -69,6 +69,7 @@ const HimnoList = ({
             </p>
           </div>
         )}
+
         <Pagination
           totalPost={filteredHimnos.length}
           postPerPage={postPerPage}
