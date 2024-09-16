@@ -4,6 +4,8 @@ import InputHymns from './InputHymns';
 import { useHimnos } from '../hooks/useHimnos';
 import { useFavorites } from '../hooks/useFavorites';
 import useInput from '@/hooks/useInput';
+import Pagination from './Pagination';
+import usePagination from '@/hooks/usePagination';
 
 const HimnoList = ({
   himnos,
@@ -21,6 +23,9 @@ const HimnoList = ({
     input,
     isFavoritesPage ? favoritos : null,
   );
+  const { currentHymns, postPerPage, setCurrentPage, currentPage } =
+    usePagination(filteredHimnos);
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6">
@@ -35,9 +40,9 @@ const HimnoList = ({
           setTipoHimnario={setTipoHimnario}
         />
 
-        {filteredHimnos.length > 0 ? (
+        {currentHymns.length > 0 ? (
           <ul className="space-y-3">
-            {filteredHimnos.map((himno) => {
+            {currentHymns.map((himno) => {
               const match = obtenerIdsYNumeros.find(
                 (item) => item.id === himno.id,
               );
@@ -64,6 +69,12 @@ const HimnoList = ({
             </p>
           </div>
         )}
+        <Pagination
+          totalPost={filteredHimnos.length}
+          postPerPage={postPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );
