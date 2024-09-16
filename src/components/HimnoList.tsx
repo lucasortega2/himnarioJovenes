@@ -16,7 +16,9 @@ const HimnoList = ({
 }) => {
   const { tipoHimnario, setTipoHimnario, obtenerIdsYNumeros, filtrarHimnos } =
     useHimnos(himnos, jovenes, himnario, suplementario);
+
   const { favoritos, toggleFavorite, isFavorite } = useFavorites();
+
   const { input, handleInput } = useInput();
 
   const filteredHimnos = filtrarHimnos(
@@ -25,10 +27,13 @@ const HimnoList = ({
   );
   const { currentHymns, postPerPage, setCurrentPage, currentPage } =
     usePagination(filteredHimnos);
-
+  const handleChangeSelector = (value) => {
+    setCurrentPage(1);
+    setTipoHimnario(value);
+  };
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6  ">
+      <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6 h-max ">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">
           {isFavoritesPage ? 'Himnos Favoritos' : 'Listado de Himnos'}
         </h2>
@@ -37,7 +42,7 @@ const HimnoList = ({
 
         <HimnarioSelector
           tipoHimnario={tipoHimnario}
-          setTipoHimnario={setTipoHimnario}
+          handleChangeSelector={handleChangeSelector}
         />
 
         {currentHymns.length > 0 ? (

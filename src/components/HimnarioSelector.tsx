@@ -1,4 +1,4 @@
-const HimnarioSelector = ({ tipoHimnario, setTipoHimnario }) => {
+const HimnarioSelector = ({ tipoHimnario, handleChangeSelector }) => {
   return (
     <div className="mb-6 mt-4">
       <label
@@ -10,7 +10,7 @@ const HimnarioSelector = ({ tipoHimnario, setTipoHimnario }) => {
       <select
         id="tipoHimnario"
         value={tipoHimnario}
-        onChange={(e) => setTipoHimnario(e.target.value)}
+        onChange={(e) => handleChangeSelector(e.target.value)}
         className="w-full p-2 rounded-lg bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option value="todos">Todos</option>
