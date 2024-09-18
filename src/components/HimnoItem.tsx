@@ -9,7 +9,7 @@ const HimnoItem = ({
   isFavoritesPage,
 }) => {
   return (
-    <li className="flex items-center justify-between py-3 px-4 bg-slate-700 bg-opacity-50 rounded-xl hover:bg-opacity-70 transition-all duration-300">
+    <li className="flex items-center h-[50px] justify-between py-3 px-4 bg-slate-700 bg-opacity-50 rounded-xl hover:bg-opacity-70 transition-all duration-300">
       <a
         href={`/himnos/${himno.id}`}
         className="text-slate-200 hover:text-white transition-colors duration-300 flex-grow"

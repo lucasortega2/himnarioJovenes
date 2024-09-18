@@ -1,4 +1,5 @@
 // components/ButtonDeleteHymn.tsx
+import { Trash2 } from 'lucide-react';
 import React from 'react';
 
 interface ButtonDeleteHymnProps {
@@ -34,7 +35,7 @@ const ButtonDeleteHymn: React.FC<ButtonDeleteHymnProps> = ({
       onClick={deleteHymn}
       className="delete-hymn-btn text-red-400 hover:text-red-300"
     >
-      Eliminar
+      <Trash2 />
     </button>
   );
 };

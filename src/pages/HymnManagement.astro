@@ -3,6 +3,7 @@ import ButtonHome from '../components/ButtonHome.astro';
 import { db, Himnos as dataHimnos } from 'astro:db';
 import HymnManagementComponent from '@/components/HymnManagementComponent';
 import Layout from '@/layouts/Layout.astro';
+import { CirclePlus } from 'lucide-react';
 
 const user = Astro.locals.user;
 if (!user) {
@@ -24,7 +25,7 @@ const himnos = await db.select().from(dataHimnos);
           href="/addHymn"
           class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300 text-center"
         >
-          Agregar Himno
+          <CirclePlus />
         </a>
       </div>
       <HymnManagementComponent client:load initialHimnos={himnos} />
