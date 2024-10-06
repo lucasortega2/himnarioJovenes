@@ -51,6 +51,8 @@ const HimnoList = ({
               const match = obtenerIdsYNumeros.find(
                 (item) => item.id === himno.id,
               );
+              console.log(match);
+
               const numero = match ? match.numero : null;
 
               return (

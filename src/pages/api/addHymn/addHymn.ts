@@ -1,5 +1,5 @@
 import type { APIRoute, APIContext } from 'astro';
-import { db, Himnos, Himnario, Suplementario, Jovenes } from 'astro:db';
+import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 
 export const POST: APIRoute = async (context: APIContext) => {
   const formData = await context.request.formData();
@@ -20,6 +20,46 @@ export const POST: APIRoute = async (context: APIContext) => {
   }
 
   try {
+    // Validar que el himno no exista en la tabla de Jóvenes (validación por título)
+    const existingInJovenes = await db
+      .select()
+      .from(Jovenes)
+      .where(eq(Himnos.titulo, titulo.toString()));
+
+    if (existingInJovenes.length > 0) {
+      return new Response('El himno ya existe en la tabla de Jóvenes', {
+        status: 400,
+      });
+    }
+
+    // Validar que el número no exista en la tabla de Himnario
+    if (himnario === 'Himnario') {
+      const existingInHimnario = await db
+        .select()
+        .from(Himnario)
+        .where(eq(Himnario.numero, formatNumero));
+
+      if (existingInHimnario.length > 0) {
+        return new Response('El número ya existe en el Himnario', {
+          status: 400,
+        });
+      }
+    }
+
+    // Validar que el número no exista en la tabla de Suplementario
+    if (himnario === 'Suplementario') {
+      const existingInSuplementario = await db
+        .select()
+        .from(Suplementario)
+        .where(eq(Suplementario.numero, formatNumero));
+
+      if (existingInSuplementario.length > 0) {
+        return new Response('El número ya existe en el Suplementario', {
+          status: 400,
+        });
+      }
+    }
+
     // Insertar el himno principal
     const [himno] = await db
       .insert(Himnos)
