@@ -75,11 +75,9 @@ En la localidad.`,
   await db.insert(Jovenes).values([
     {
       himnoId: 1,
-      numero: 1,
     },
     {
       himnoId: 2,
-      numero: 2,
     },
   ]);
 }

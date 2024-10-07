@@ -4,10 +4,8 @@ import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 export const POST: APIRoute = async (context: APIContext) => {
   const formData = await context.request.json();
   const numero = formData.numero;
-
   const himnario = formData.himnario;
   const numero2 = formData.numero2;
-
   const himnario2 = formData.himnario2;
   const titulo = formData.titulo;
   const letra = formData.letra;

@@ -2,15 +2,17 @@ import type { APIRoute, APIContext } from 'astro';
 import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 
 export const POST: APIRoute = async (context: APIContext) => {
-  const formData = await context.request.formData();
+  const formData = await context.request.json();
   const { id } = context.params;
+
   const formatId = Number(id);
-  const numero = formData.get('numero');
-  const himnario = formData.get('himnario');
-  const numero2 = formData.get('numero2');
-  const himnario2 = formData.get('himnario2');
-  const titulo = formData.get('titulo');
-  const letra = formData.get('letra');
+
+  const numero = formData.numero;
+  const himnario = formData.himnario;
+  const numero2 = formData.numero2;
+  const himnario2 = formData.himnario2;
+  const titulo = formData.titulo;
+  const letra = formData.letra;
 
   // Validaciones
   if (!himnario || !titulo || !letra) {
@@ -20,6 +22,116 @@ export const POST: APIRoute = async (context: APIContext) => {
   }
 
   try {
+    // Obtener el himno actual para comparar
+    const [currentHymn] = await db
+      .select()
+      .from(Himnos)
+      .where(eq(Himnos.id, formatId));
+
+    // Obtener el número actual del himno desde las tablas correspondientes
+    const [currentHymnario] = await db
+      .select()
+      .from(Himnario)
+      .where(eq(Himnario.himnoId, formatId));
+
+    const [currentSuplementario] = await db
+      .select()
+      .from(Suplementario)
+      .where(eq(Suplementario.himnoId, formatId));
+
+    const [currentJovenes] = await db
+      .select()
+      .from(Jovenes)
+      .where(eq(Jovenes.himnoId, formatId));
+    // Validar que el himno no exista en los otros himnarios, excluyendo el actual
+
+    const existingHymn = async (typeHymnal, numero, title) => {
+      let query;
+      if (typeHymnal === 'Jovenes') {
+        query = db.select().from(Himnos).where(eq(Himnos.titulo, title));
+      } else if (typeHymnal === 'Himnario') {
+        query = db.select().from(Himnario).where(eq(Himnario.numero, numero));
+      } else if (typeHymnal === 'Suplementario') {
+        query = db
+          .select()
+          .from(Suplementario)
+          .where(eq(Suplementario.numero, numero));
+      }
+      const [exist] = await query;
+      return exist;
+    };
+
+    const errors = [];
+
+    // Verificar si el título ha cambiado
+    if (titulo !== currentHymn.titulo && himnario === 'Jovenes') {
+      const exist = await existingHymn('Jovenes', null, titulo);
+      if (exist) {
+        errors.push(
+          `El himno con el título '${titulo}' ya existe en 'Jovenes'`,
+        );
+      }
+    }
+
+    // Verificar el número del himnario
+
+    if (himnario === 'Himnario' && numero !== currentHymnario?.numero) {
+      const exist = await existingHymn(himnario, numero, null);
+
+      if (exist) {
+        errors.push(`El himno ${numero} ya existe en 'Himnario'`);
+      }
+    }
+
+    // Verificar el número del suplementario
+    if (
+      himnario === 'Suplementario' &&
+      numero !== currentSuplementario?.numero
+    ) {
+      const exist = await existingHymn(himnario, numero, null);
+      if (exist) {
+        errors.push(`El himno ${numero} ya existe en 'Suplementario'`);
+      }
+    }
+
+    // Verificar el número de jóvenes, nunca entra aca en el form del himnario ya que no se puede cambiar el numero y siempre va a ser diferente porque es auto
+    if (himnario === 'Jovenes' && numero !== currentJovenes?.numero) {
+      const exist = await existingHymn(himnario, numero, null);
+      if (exist) {
+        errors.push(`El himno ${numero} ya existe en 'Jovenes'`);
+      }
+    }
+    if (himnario2) {
+      if (himnario2 === 'Himnario' && numero2 !== currentHymnario?.numero) {
+        const exist = await existingHymn(himnario2, numero2, null);
+        if (exist) {
+          errors.push(`El himno ${numero2} ya existe en 'Himnario'`);
+        }
+      } else if (
+        himnario2 === 'Suplementario' &&
+        numero2 !== currentSuplementario?.numero
+      ) {
+        const exist = await existingHymn(himnario2, numero2, null);
+        if (exist) {
+          errors.push(`El himno ${numero2} ya existe en 'Suplementario'`);
+        }
+      } else if (
+        himnario2 === 'Jovenes' &&
+        numero2 !== currentJovenes?.numero
+      ) {
+        const exist = await existingHymn(himnario2, numero2, null);
+        if (exist) {
+          errors.push(`El himno ${numero2} ya existe en 'Jovenes'`);
+        }
+      }
+    }
+    if (errors.length > 0) {
+      return new Response(JSON.stringify({ message: errors.join(', ') }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Actualizar el himno principal
     await db
       .update(Himnos)
@@ -75,17 +187,17 @@ export const POST: APIRoute = async (context: APIContext) => {
     }
 
     // Si hay un segundo himnario, actualizar/insertar también allí
-    if (himnario2 && numero2 && himnario2 !== 'Seleccionar') {
+    if (himnario2 && numero2) {
       if (himnario2 === 'Himnario') {
         await updateOrInsertIntoHymnalTable(Himnario, numero2, formatId);
       } else if (himnario2 === 'Suplementario') {
         await updateOrInsertIntoHymnalTable(Suplementario, numero2, formatId);
       } else if (himnario2 === 'Jovenes') {
-        const existingEntry2 = await db
+        const existingEntry = await db
           .select()
           .from(Jovenes)
           .where(eq(Jovenes.himnoId, formatId));
-        if (existingEntry2.length > 0) {
+        if (existingEntry.length > 0) {
           await db
             .update(Jovenes)
             .set({ himnoId: formatId })
@@ -98,9 +210,20 @@ export const POST: APIRoute = async (context: APIContext) => {
       }
     }
 
-    return context.redirect('/HymnManagement');
+    return new Response(
+      JSON.stringify({ message: 'Himno actualizado con éxito' }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
-    console.error('Error al actualizar el himno:', error);
-    return new Response('Error al actualizar el himno', { status: 500 });
+    return new Response(
+      JSON.stringify({ message: 'Error al actualizar el himno' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   }
 };

@@ -29,9 +29,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
 }) => {
   const [numero, setNumero] = useState<string | number>('');
 
-  const [numero2, setNumero2] = useState<string | number | undefined>(
-    undefined,
-  );
+  const [numero2, setNumero2] = useState<string | number>('');
 
   const [himnario, setHimnario] = useState('seleccionar');
   const [himnario2, setHimnario2] = useState('seleccionar');
@@ -46,10 +44,10 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
       setTitulo(himno.titulo || '');
       setLetra(himno.letra || '');
       if (numeroJovenes) {
-        setNumero(numeroJovenes.numero);
+        setNumero(numeroJovenes.numero?.toString() || '');
         setHimnario('Jovenes');
       } else if (numeroHimnario) {
-        setNumero(numeroHimnario.numero);
+        setNumero(numeroHimnario.numero?.toString() || '');
         setHimnario('Himnario');
       }
       if (numeroSuplementario) {
@@ -88,14 +86,13 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
         },
       );
 
+      const result = await response.json();
       if (!response.ok) {
-        const result = await response.json();
         setError(true);
         setResponse(result.message || 'Error al agregar el himno'); // Establece el error si la respuesta no es exitosa
       } else {
         setError(false);
-        // Maneja el éxito, por ejemplo redirigir a otra página o mostrar un mensaje de éxito
-        setResponse('Himno Agregado satisfactoriamente');
+        setResponse(result.message);
       }
     } catch (error) {
       setResponse('Error de servidor. Inténtalo más tarde.'); // Muestra error genérico si ocurre un fallo

@@ -25,7 +25,7 @@ const Suplementario = defineTable({
       primaryKey: true,
       references: () => Himnos.columns.id,
     }),
-    numero: column.number({ optional: false }),
+    numero: column.text({ optional: false }),
   },
 });
 

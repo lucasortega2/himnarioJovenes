@@ -8,6 +8,8 @@ const HimnoItem = ({
   toggleFavorite,
   isFavoritesPage,
 }) => {
+  console.log(numero);
+
   return (
     <li className="flex items-center h-[50px] justify-between py-3 px-4 bg-slate-700 bg-opacity-50 rounded-xl hover:bg-opacity-70 transition-all duration-300">
       <a

@@ -46,13 +46,11 @@ const HimnoList = ({
         />
 
         {currentHymns.length > 0 ? (
-          <ul className="flex flex-col justify-between h-[500px]">
+          <ul className="flex flex-col h-[500px] space-y-4">
             {currentHymns.map((himno) => {
               const match = obtenerIdsYNumeros.find(
                 (item) => item.id === himno.id,
               );
-              console.log(match);
-
               const numero = match ? match.numero : null;
 
               return (
