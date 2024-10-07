@@ -2,15 +2,15 @@ import type { APIRoute, APIContext } from 'astro';
 import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 
 export const POST: APIRoute = async (context: APIContext) => {
-  const formData = await context.request.formData();
-  const numero = formData.get('numero');
-  const formatNumero = Number(numero);
-  const himnario = formData.get('himnario');
-  const numero2 = formData.get('numero2');
-  const formatNumero2 = Number(numero2);
-  const himnario2 = formData.get('himnario2');
-  const titulo = formData.get('titulo');
-  const letra = formData.get('letra');
+  const formData = await context.request.json();
+  const numero = formData.numero;
+
+  const himnario = formData.himnario;
+  const numero2 = formData.numero2;
+
+  const himnario2 = formData.himnario2;
+  const titulo = formData.titulo;
+  const letra = formData.letra;
 
   // Validaciones
   if (!himnario || !titulo || !letra) {
@@ -20,44 +20,48 @@ export const POST: APIRoute = async (context: APIContext) => {
   }
 
   try {
-    // Validar que el himno no exista en la tabla de Jóvenes (validación por título)
-    const existingInJovenes = await db
-      .select()
-      .from(Jovenes)
-      .where(eq(Himnos.titulo, titulo.toString()));
+    const existingHymn = async (typeHymnal, numero, title) => {
+      if (typeHymnal === 'Jovenes') {
+        const [exist] = await db
+          .select()
+          .from(Himnos)
+          .where(eq(Himnos.titulo, title));
+        return exist;
+      }
+      if (typeHymnal === 'Himnario') {
+        const [exist] = await db
+          .select()
+          .from(Himnario)
+          .where(eq(Himnario.numero, numero));
+        return exist;
+      }
 
-    if (existingInJovenes.length > 0) {
-      return new Response('El himno ya existe en la tabla de Jóvenes', {
+      if (typeHymnal === 'Suplementario') {
+        const [exist] = await db
+          .select()
+          .from(Suplementario)
+          .where(eq(Suplementario.numero, numero));
+        return exist;
+      }
+    };
+    const exist = await existingHymn(himnario, numero, titulo);
+    const exist2 = await existingHymn(himnario2, numero2, titulo);
+
+    const errors = [];
+
+    if (exist) {
+      errors.push(`El himno ${numero} ya existe en ${himnario}`);
+    }
+
+    if (exist2) {
+      errors.push(`El himno ${numero2} ya existe en ${himnario2}`);
+    }
+
+    if (errors.length > 0) {
+      return new Response(JSON.stringify({ message: errors.join(', ') }), {
         status: 400,
+        headers: { 'Content-Type': 'application/json' },
       });
-    }
-
-    // Validar que el número no exista en la tabla de Himnario
-    if (himnario === 'Himnario') {
-      const existingInHimnario = await db
-        .select()
-        .from(Himnario)
-        .where(eq(Himnario.numero, formatNumero));
-
-      if (existingInHimnario.length > 0) {
-        return new Response('El número ya existe en el Himnario', {
-          status: 400,
-        });
-      }
-    }
-
-    // Validar que el número no exista en la tabla de Suplementario
-    if (himnario === 'Suplementario') {
-      const existingInSuplementario = await db
-        .select()
-        .from(Suplementario)
-        .where(eq(Suplementario.numero, formatNumero));
-
-      if (existingInSuplementario.length > 0) {
-        return new Response('El número ya existe en el Suplementario', {
-          status: 400,
-        });
-      }
     }
 
     // Insertar el himno principal
@@ -81,9 +85,9 @@ export const POST: APIRoute = async (context: APIContext) => {
 
     // Insertar en la tabla del primer himnario
     if (himnario === 'Himnario') {
-      await insertIntoHymnalTable(Himnario, formatNumero, himno.id);
+      await insertIntoHymnalTable(Himnario, numero, himno.id);
     } else if (himnario === 'Suplementario') {
-      await insertIntoHymnalTable(Suplementario, formatNumero, himno.id);
+      await insertIntoHymnalTable(Suplementario, numero, himno.id);
     } else if (himnario === 'Jovenes') {
       await db.insert(Jovenes).values({
         himnoId: himno.id,
@@ -93,9 +97,9 @@ export const POST: APIRoute = async (context: APIContext) => {
     // Si hay un segundo himnario, insertar también allí
     if (himnario2 && numero2) {
       if (himnario2 === 'Himnario') {
-        await insertIntoHymnalTable(Himnario, formatNumero2, himno.id);
+        await insertIntoHymnalTable(Himnario, numero2, himno.id);
       } else if (himnario2 === 'Suplementario') {
-        await insertIntoHymnalTable(Suplementario, formatNumero2, himno.id);
+        await insertIntoHymnalTable(Suplementario, numero2, himno.id);
       } else if (himnario2 === 'Jovenes') {
         await db.insert(Jovenes).values({
           himnoId: himno.id,
@@ -103,9 +107,20 @@ export const POST: APIRoute = async (context: APIContext) => {
       }
     }
 
-    return context.redirect('/HymnManagement');
+    return new Response(
+      JSON.stringify({ message: 'Himno agregado con éxito' }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
-    console.error('Error al agregar el himno:', error);
-    return new Response('Error al agregar el himno', { status: 500 });
+    return new Response(
+      JSON.stringify({ message: 'Error al agregar el himno' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   }
 };

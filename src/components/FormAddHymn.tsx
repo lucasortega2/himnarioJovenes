@@ -37,7 +37,8 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
   const [himnario2, setHimnario2] = useState('seleccionar');
   const [titulo, setTitulo] = useState('');
   const [letra, setLetra] = useState('');
-
+  const [response, setResponse] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const isMainFieldsFilled = numero !== '' && himnario !== '';
 
   useEffect(() => {
@@ -64,12 +65,52 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
     }
   }, [himnario]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Evita el comportamiento por defecto del formulario
+    setResponse(null); // Resetea el estado de error antes de hacer la petición
+
+    try {
+      const response = await fetch(
+        `${himno ? `/api/editHymn/${himno.id}/` : '/api/addHymn/addHymn'}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            numero,
+            numero2,
+            himnario,
+            himnario2,
+            titulo,
+            letra,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const result = await response.json();
+        setError(true);
+        setResponse(result.message || 'Error al agregar el himno'); // Establece el error si la respuesta no es exitosa
+      } else {
+        setError(false);
+        // Maneja el éxito, por ejemplo redirigir a otra página o mostrar un mensaje de éxito
+        setResponse('Himno Agregado satisfactoriamente');
+      }
+    } catch (error) {
+      setResponse('Error de servidor. Inténtalo más tarde.'); // Muestra error genérico si ocurre un fallo
+    }
+  };
+
   return (
-    <form
-      method="post"
-      action={`${himno ? `/api/editHymn/${himno.id}/` : '/api/addHymn/addHymn'}`}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {response && (
+        <div
+          className={`text-sm font-medium ${error ? 'text-red-500' : 'text-green-400'} bg-opacity-100 bg-transparent`}
+        >
+          {response}
+        </div>
+      )}
       <div className="flex gap-4">
         <div className="flex-1">
           <label
@@ -102,7 +143,13 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
             id="himnario"
             className="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             value={himnario}
-            onChange={(e) => setHimnario(e.target.value)}
+            onChange={(e) => {
+              setHimnario(e.target.value);
+              if (e.target.value === 'Jovenes') {
+                setNumero2('');
+                setHimnario2('seleccionar');
+              }
+            }}
           >
             <option value="seleccionar">seleccioná un himnario</option>
             <option value="Himnario">Himnario</option>
