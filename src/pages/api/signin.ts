@@ -55,7 +55,9 @@ export async function POST(context): Promise<Response> {
     sessionCookie.value,
     sessionCookie.attributes,
   );
-  'Sending response:', { redirect: '/HymnManagement' };
+  {
+    redirect: '/HymnManagement';
+  }
   return new Response(JSON.stringify({ redirect: '/HymnManagement' }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
