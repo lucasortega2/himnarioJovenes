@@ -17,7 +17,7 @@ interface FormAddHymnProps {
   };
   numeroSuplementario?: {
     himnoId?: number;
-    numero?: number;
+    numero?: string;
   };
 }
 
