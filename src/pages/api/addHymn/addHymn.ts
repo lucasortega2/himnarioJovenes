@@ -2,6 +2,14 @@ import type { APIRoute, APIContext } from 'astro';
 import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 
 export const POST: APIRoute = async (context: APIContext) => {
+  const apiKey = context.request.headers.get('x-api-key');
+
+  if (apiKey !== process.env.API_KEY) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+    });
+  }
+
   const formData = await context.request.json();
   const numero = formData.numero;
   const himnario = formData.himnario;
