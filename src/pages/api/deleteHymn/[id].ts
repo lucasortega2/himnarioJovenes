@@ -2,6 +2,13 @@ import type { APIRoute, APIContext } from 'astro';
 import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 
 export const DELETE: APIRoute = async (context: APIContext) => {
+  const apiKey = context.request.headers.get('API_KEY');
+
+  if (apiKey !== import.meta.env.API_KEY) {
+    return new Response(JSON.stringify({ message: 'Unauthorized' }), {
+      status: 401,
+    });
+  }
   const { id } = context.params;
   const himnoId = Number(id);
 
