@@ -3,11 +3,6 @@ import { db, Himnos, Himnario, Suplementario, Jovenes, eq } from 'astro:db';
 
 export const POST: APIRoute = async (context: APIContext) => {
   const apiKey = context.request.headers.get('API_KEY');
-  // console.log('esto seria la api key sin public');
-
-  console.log(import.meta.env.API_KEY);
-  console.log(apiKey);
-
   if (apiKey !== import.meta.env.API_KEY) {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), {
       status: 401,
