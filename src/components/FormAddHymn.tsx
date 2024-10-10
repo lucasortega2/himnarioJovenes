@@ -76,7 +76,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            API_KEY: 'señorjesus',
+            API_KEY: 'LordJesus',
           },
           body: JSON.stringify({
             numero,

@@ -6,6 +6,7 @@ export const POST: APIRoute = async (context: APIContext) => {
   // console.log('esto seria la api key sin public');
 
   console.log(import.meta.env.API_KEY);
+  console.log(apiKey);
 
   if (apiKey !== import.meta.env.API_KEY) {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), {
