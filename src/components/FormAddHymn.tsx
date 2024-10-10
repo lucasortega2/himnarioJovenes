@@ -62,6 +62,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
       setNumero('auto');
     }
   }, [himnario]);
+  const data = import.meta.env.PUBLIC_API_KEY;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Evita el comportamiento por defecto del formulario
@@ -74,6 +75,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            API_KEY: 'señorjesus',
           },
           body: JSON.stringify({
             numero,
