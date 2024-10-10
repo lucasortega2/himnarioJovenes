@@ -14,6 +14,9 @@ const ButtonDeleteHymn: React.FC<ButtonDeleteHymnProps> = ({
   const deleteHymn = () => {
     if (confirm('¿Estás seguro de que quieres eliminar este himno?')) {
       fetch(`/api/deleteHymn/${id}`, {
+        headers: {
+          API_KEY: import.meta.env.PUBLIC_API_KEY,
+        },
         method: 'DELETE',
       })
         .then((response) => {
