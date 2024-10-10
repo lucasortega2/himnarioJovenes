@@ -63,6 +63,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
     }
   }, [himnario]);
   const data = import.meta.env.PUBLIC_API_KEY;
+  console.log(data);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Evita el comportamiento por defecto del formulario
