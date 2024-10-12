@@ -144,6 +144,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
             onChange={(e) => {
               setHimnario(e.target.value);
               if (e.target.value === 'Jovenes') {
+                setNumero('');
                 setNumero2('');
                 setHimnario2('seleccionar');
               }
