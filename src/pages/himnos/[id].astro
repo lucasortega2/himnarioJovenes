@@ -4,41 +4,56 @@ import BotonVolver from '../../components/ButtonBack.astro';
 import ChordsModal from '@/components/ChordsModal';
 import { eq } from 'astro:db';
 import Layout from '@/layouts/Layout.astro';
-export const prerender = true;
-export const getStaticPaths = async () => {
-  const himnos = await db.select().from(Himnos);
-  const paths = await Promise.all(
-    himnos.map(async (himno) => {
-      const [numeroJovenes] = await db
-        .select()
-        .from(Jovenes)
-        .where(eq(Jovenes.himnoId, himno.id));
-      const [numeroHimnario] = await db
-        .select()
-        .from(Himnario)
-        .where(eq(Himnario.himnoId, himno.id));
-      const [numeroSuplementario] = await db
-        .select()
-        .from(Suplementario)
-        .where(eq(Suplementario.himnoId, himno.id));
-      return {
-        params: { id: himno.id },
-        props: {
-          himno,
-          numeroJovenes,
-          numeroHimnario,
-          numeroSuplementario,
-        },
-      };
-    }),
-  );
-  return paths;
-};
 
-const { himno, numeroHimnario, numeroJovenes, numeroSuplementario } =
-  Astro.props;
+// export const getStaticPaths = async () => {
+//   const himnos = await db.select().from(Himnos);
+//   const paths = await Promise.all(
+//     himnos.map(async (himno) => {
+//       const [numeroJovenes] = await db
+//         .select()
+//         .from(Jovenes)
+//         .where(eq(Jovenes.himnoId, himno.id));
+//       const [numeroHimnario] = await db
+//         .select()
+//         .from(Himnario)
+//         .where(eq(Himnario.himnoId, himno.id));
+//       const [numeroSuplementario] = await db
+//         .select()
+//         .from(Suplementario)
+//         .where(eq(Suplementario.himnoId, himno.id));
+//       return {
+//         params: { id: himno.id },
+//         props: {
+//           himno,
+//           numeroJovenes,
+//           numeroHimnario,
+//           numeroSuplementario,
+//         },
+//       };
+//     }),
+//   );
+//   return paths;
+// };
 
-// const [himno] = await db.select().from(Himnos).where(eq(Himnos.id, formatId));
+// const { himno, numeroHimnario, numeroJovenes, numeroSuplementario } =
+//   Astro.props;
+const { id } = Astro.params;
+const formatId = Number(id);
+
+const [himno] = await db.select().from(Himnos).where(eq(Himnos.id, formatId));
+const [numeroJovenes] = await db
+  .select()
+  .from(Jovenes)
+  .where(eq(Jovenes.himnoId, formatId));
+
+const [numeroHimnario] = await db
+  .select()
+  .from(Himnario)
+  .where(eq(Himnario.himnoId, formatId));
+const [numeroSuplementario] = await db
+  .select()
+  .from(Suplementario)
+  .where(eq(Suplementario.himnoId, formatId));
 
 const hasChords = himno && himno.acorde && himno.acorde.trim() !== '';
 
