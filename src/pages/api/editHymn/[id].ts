@@ -157,7 +157,10 @@ export const POST: APIRoute = async (context: APIContext) => {
       try {
         await db.delete(table).where(eq(table.himnoId, id));
       } catch (error) {
-        console.log(error);
+        return new Response(JSON.stringify({ message: error.message }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
       }
     }
 

@@ -30,8 +30,6 @@ export default function Component({
   suplementario,
 }: HymnManagementProps) {
   const [himnos, setHimnos] = useState(initialHimnos);
-  console.log(jovenes);
-
   const handleDelete = (deletedId: number) => {
     setHimnos(himnos.filter((himno) => himno.id !== deletedId));
   };
