@@ -16,6 +16,7 @@ export const POST: APIRoute = async (context: APIContext) => {
   const formatId = Number(id);
 
   const numero = formData.numero;
+  const formatNumero = Number(numero);
   const himnario = formData.himnario;
   const numero2 = formData.numero2;
   const himnario2 = formData.himnario2;
@@ -82,19 +83,23 @@ export const POST: APIRoute = async (context: APIContext) => {
     }
 
     // Verificar el número del himnario
-
-    if (himnario === 'Himnario' && numero !== currentHymnario?.numero) {
+    const formatCurrentHymnarioNumber = currentHymnario?.numero;
+    if (
+      himnario === 'Himnario' &&
+      formatNumero !== formatCurrentHymnarioNumber
+    ) {
       const exist = await existingHymn(himnario, numero, null);
 
       if (exist) {
         errors.push(`El himno ${numero} ya existe en 'Himnario'`);
       }
     }
-
+    //sup no tiene format number porque es un string
+    const formatCurrentSuplementarioNumber = currentSuplementario?.numero;
     // Verificar el número del suplementario
     if (
       himnario === 'Suplementario' &&
-      numero !== currentSuplementario?.numero
+      numero !== formatCurrentSuplementarioNumber
     ) {
       const exist = await existingHymn(himnario, numero, null);
       if (exist) {

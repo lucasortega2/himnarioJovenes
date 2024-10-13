@@ -94,7 +94,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
         setResponse(result.message);
         setTimeout(() => {
           window.location.href = '/HymnManagement';
-        }, 1000);
+        }, 600);
       }
     } catch (error) {
       setResponse('Error de servidor. Inténtalo más tarde.'); // Muestra error genérico si ocurre un fallo
