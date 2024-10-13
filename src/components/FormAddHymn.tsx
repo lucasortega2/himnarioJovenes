@@ -64,7 +64,6 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Evita el comportamiento por defecto del formulario
     setResponse(null); // Resetea el estado de error antes de hacer la petición
-    console.log(import.meta.env.API_KEY);
 
     try {
       const response = await fetch(
@@ -73,7 +72,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            API_KEY: import.meta.env.API_KEY,
+            API_KEY: import.meta.env.PUBLIC_API_KEY,
           },
           body: JSON.stringify({
             numero,
