@@ -28,9 +28,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
   numeroSuplementario,
 }) => {
   const [numero, setNumero] = useState<string | number>('');
-
   const [numero2, setNumero2] = useState<string | number>('');
-
   const [himnario, setHimnario] = useState('seleccionar');
   const [himnario2, setHimnario2] = useState('seleccionar');
   const [titulo, setTitulo] = useState('');
@@ -94,6 +92,9 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
       } else {
         setError(false);
         setResponse(result.message);
+        setTimeout(() => {
+          window.location.href = '/HymnManagement';
+        }, 1000);
       }
     } catch (error) {
       setResponse('Error de servidor. Inténtalo más tarde.'); // Muestra error genérico si ocurre un fallo
