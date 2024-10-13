@@ -18,6 +18,7 @@ export const POST: APIRoute = async (context: APIContext) => {
   const numero = formData.numero;
   const formatNumero = Number(numero);
   const himnario = formData.himnario;
+
   const numero2 = formData.numero2;
   const himnario2 = formData.himnario2;
   const titulo = formData.titulo;
@@ -144,7 +145,33 @@ export const POST: APIRoute = async (context: APIContext) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
+    const typeHimnals = {
+      Himnario,
+      Jovenes,
+      Suplementario,
+    };
 
+    async function deleteTypeHymnalFromDb(type, id) {
+      const table = typeHimnals[type];
+
+      try {
+        await db.delete(table).where(eq(table.himnoId, id));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (currentHymnario && himnario !== 'Himnario') {
+      await deleteTypeHymnalFromDb('Himnario', formatId);
+    }
+
+    if (currentSuplementario && himnario !== 'Suplementario') {
+      await deleteTypeHymnalFromDb('Suplementario', formatId);
+    }
+
+    if (currentJovenes && himnario !== 'Jovenes') {
+      await deleteTypeHymnalFromDb('Jovenes', formatId);
+    }
     // Actualizar el himno principal
     await db
       .update(Himnos)
@@ -161,6 +188,7 @@ export const POST: APIRoute = async (context: APIContext) => {
           .select()
           .from(table)
           .where(eq(table.himnoId, himnoId));
+
         if (existingEntry.length > 0) {
           // Actualiza si ya existe
           await db

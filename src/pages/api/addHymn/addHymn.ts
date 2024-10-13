@@ -56,11 +56,11 @@ export const POST: APIRoute = async (context: APIContext) => {
     const errors = [];
 
     if (exist) {
-      errors.push(`El himno ${numero} ya existe en ${himnario}`);
+      errors.push(`El himno ${titulo} ya existe en ${himnario}`);
     }
 
     if (exist2) {
-      errors.push(`El himno ${numero2} ya existe en ${himnario2}`);
+      errors.push(`El himno ${titulo} ya existe en ${himnario2}`);
     }
 
     if (errors.length > 0) {

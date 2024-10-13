@@ -41,25 +41,47 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
     if (himno) {
       setTitulo(himno.titulo || '');
       setLetra(himno.letra || '');
+
+      // Fill the first set of inputs if available
       if (numeroJovenes) {
         setNumero(numeroJovenes.numero?.toString() || '');
         setHimnario('Jovenes');
       } else if (numeroHimnario) {
         setNumero(numeroHimnario.numero?.toString() || '');
         setHimnario('Himnario');
+      } else if (numeroSuplementario) {
+        setNumero(numeroSuplementario.numero?.toString() || '');
+        setHimnario('Suplementario');
       }
-      if (numeroSuplementario) {
-        setNumero2(numeroSuplementario.numero);
+
+      // Fill the second set of inputs if there's additional data
+      if (numeroJovenes && (numeroHimnario || numeroSuplementario)) {
+        if (numeroHimnario) {
+          setNumero2(numeroHimnario.numero?.toString() || '');
+          setHimnario2('Himnario');
+        } else if (numeroSuplementario) {
+          setNumero2(numeroSuplementario.numero?.toString() || '');
+          setHimnario2('Suplementario');
+        }
+      } else if (numeroHimnario && numeroSuplementario) {
+        setNumero2(numeroSuplementario.numero?.toString() || '');
         setHimnario2('Suplementario');
       }
     }
   }, [himno, numeroJovenes, numeroHimnario, numeroSuplementario]);
   const isYoung = himnario === 'Jovenes';
+
   useEffect(() => {
     if (isYoung) {
       setNumero('auto');
+      setNumero2('');
+      setHimnario2('seleccionar');
     }
   }, [himnario]);
+  const himnarioOptions = ['Jovenes', 'Himnario', 'Suplementario'];
+  const availableHimnarios = himnarioOptions.filter(
+    (option) => option !== himnario,
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Evita el comportamiento por defecto del formulario
@@ -92,9 +114,9 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
       } else {
         setError(false);
         setResponse(result.message);
-        setTimeout(() => {
-          window.location.href = '/HymnManagement';
-        }, 600);
+        // setTimeout(() => {
+        //   window.location.href = '/HymnManagement';
+        // }, 600);
       }
     } catch (error) {
       setResponse('Error de servidor. Inténtalo más tarde.'); // Muestra error genérico si ocurre un fallo
@@ -142,18 +164,14 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
             id="himnario"
             className="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             value={himnario}
-            onChange={(e) => {
-              setHimnario(e.target.value);
-              if (e.target.value === 'Jovenes') {
-                setNumero2('');
-                setHimnario2('seleccionar');
-              }
-            }}
+            onChange={(e) => setHimnario(e.target.value)}
           >
-            <option value="seleccionar">seleccioná un himnario</option>
-            <option value="Himnario">Himnario</option>
-            <option value="Suplementario">Suplementario</option>
-            <option value="Jovenes">Jóvenes</option>
+            <option value="seleccionar">Seleccioná un himnario</option>
+            {himnarioOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -199,8 +217,11 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
             disabled={isYoung || !isMainFieldsFilled}
           >
             <option value="seleccionar">seleccioná un himnario</option>
-            <option value="Himnario">Himnario</option>
-            <option value="Suplementario">Suplementario</option>
+            {availableHimnarios.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
         </div>
       </div>
