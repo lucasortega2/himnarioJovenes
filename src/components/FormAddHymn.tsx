@@ -64,6 +64,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Evita el comportamiento por defecto del formulario
     setResponse(null); // Resetea el estado de error antes de hacer la petición
+    console.log(import.meta.env.API_KEY);
 
     try {
       const response = await fetch(
