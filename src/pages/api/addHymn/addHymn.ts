@@ -95,8 +95,20 @@ export const POST: APIRoute = async (context: APIContext) => {
     } else if (himnario === 'Suplementario') {
       await insertIntoHymnalTable(Suplementario, numero, himno.id);
     } else if (himnario === 'Jovenes') {
+      const getNextNumber = (getNumber: Array<{ numero: number }>) => {
+        let expectedNumber = 1;
+        for (const { numero } of getNumber) {
+          if (numero !== expectedNumber) {
+            return expectedNumber;
+          }
+          expectedNumber++;
+        }
+      };
+      const getAllNumber = await db.select().from(Jovenes);
+      const getNumber = getNextNumber(getAllNumber);
       await db.insert(Jovenes).values({
         himnoId: himno.id,
+        numero: getNumber || undefined,
       });
     }
 
