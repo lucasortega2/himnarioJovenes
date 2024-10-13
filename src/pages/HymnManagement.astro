@@ -1,9 +1,11 @@
 ---
 import ButtonHome from '../components/ButtonHome.astro';
-import { db, Himnos as dataHimnos } from 'astro:db';
+import { db, Himnos as dataHimnos, Himnario } from 'astro:db';
 import HymnManagementComponent from '@/components/HymnManagementComponent';
 import Layout from '@/layouts/Layout.astro';
 import { CirclePlus } from 'lucide-react';
+import { Jovenes } from 'astro:db';
+import { Suplementario } from 'astro:db';
 
 const user = Astro.locals.user;
 if (!user) {
@@ -11,6 +13,9 @@ if (!user) {
 }
 
 const himnos = await db.select().from(dataHimnos);
+const himnario = await db.select().from(Himnario);
+const jovenes = await db.select().from(Jovenes);
+const suplementario = await db.select().from(Suplementario);
 ---
 
 <Layout>
@@ -28,7 +33,13 @@ const himnos = await db.select().from(dataHimnos);
           <CirclePlus />
         </a>
       </div>
-      <HymnManagementComponent client:load initialHimnos={himnos} />
+      <HymnManagementComponent
+        client:load
+        initialHimnos={himnos}
+        himnario={himnario}
+        jovenes={jovenes}
+        suplementario={suplementario}
+      />
     </div>
   </div>
 </Layout>
