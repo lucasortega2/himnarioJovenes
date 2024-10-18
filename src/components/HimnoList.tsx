@@ -6,6 +6,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import useInput from '@/hooks/useInput';
 import Pagination from './Pagination';
 import usePagination from '@/hooks/usePagination';
+import { useState } from 'react';
 
 const HimnoList = ({
   himnos,
@@ -13,9 +14,12 @@ const HimnoList = ({
   himnario,
   suplementario,
   isFavoritesPage = false,
+  isManagment = false,
 }) => {
+  const [hymns, setHymns] = useState(himnos);
+
   const { tipoHimnario, setTipoHimnario, obtenerIdsYNumeros, filtrarHimnos } =
-    useHimnos(himnos, jovenes, himnario, suplementario);
+    useHimnos(hymns, jovenes, himnario, suplementario);
 
   const { favoritos, toggleFavorite, isFavorite } = useFavorites();
 
@@ -31,6 +35,11 @@ const HimnoList = ({
     setCurrentPage(1);
     setTipoHimnario(value);
   };
+
+  const handleDelete = (deletedId) => {
+    setHymns(hymns.filter((himno) => himno.id !== deletedId));
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="flex flex-col bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl shadow-xl p-6  ">
@@ -61,6 +70,8 @@ const HimnoList = ({
                   isFavorite={isFavorite(himno.id)}
                   toggleFavorite={toggleFavorite}
                   isFavoritesPage={isFavoritesPage}
+                  isManagement={isManagment}
+                  handleDelete={handleDelete}
                 />
               );
             })}
