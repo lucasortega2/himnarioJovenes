@@ -24,7 +24,6 @@ export const POST: APIRoute = async (context: APIContext) => {
       status: 400,
     });
   }
-
   try {
     const existingHymn = async (typeHymnal, numero, title) => {
       if (typeHymnal === 'Jovenes') {
