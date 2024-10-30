@@ -4,9 +4,12 @@ import { db, Himnario, Himnos, Jovenes, Suplementario } from 'astro:db';
 export const GET: APIRoute = async (context: APIContext) => {
   try {
     const hymns = await db.select().from(Himnos);
-    const himnario = await db.select().from(Himnario);
-    const jovenes = await db.select().from(Jovenes);
-    const suplementario = await db.select().from(Suplementario);
+    const himnario = await db.select().from(Himnario).orderBy(Himnario.numero);
+    const jovenes = await db.select().from(Jovenes).orderBy(Jovenes.numero);
+    const suplementario = await db
+      .select()
+      .from(Suplementario)
+      .orderBy(Suplementario.numero);
 
     return new Response(
       JSON.stringify({ hymns, himnario, jovenes, suplementario }),
