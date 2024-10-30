@@ -1,7 +1,5 @@
 import { MdiHeartPlusOutline } from './Heart';
 import { HugeiconsHeartRemove } from './removeFavs';
-import { Pencil } from 'lucide-react';
-import ButtonDeleteHymn from './ButtonDeleteHymn';
 import ButtonsManagement from './ButtonsManagement';
 
 const HimnoItem = ({

@@ -6,6 +6,8 @@ export const GET: APIRoute = async (context: APIContext) => {
     const hymns = await db.select().from(Himnos);
     const himnario = await db.select().from(Himnario).orderBy(Himnario.numero);
     const jovenes = await db.select().from(Jovenes).orderBy(Jovenes.numero);
+    console.log(jovenes);
+
     const suplementario = await db
       .select()
       .from(Suplementario)
