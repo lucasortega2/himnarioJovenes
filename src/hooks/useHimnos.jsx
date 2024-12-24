@@ -18,10 +18,10 @@ export function useHimnos(himnos, jovenes, himnario, suplementario) {
         numero: `H${item.numero}`,
       })),
       todos: himnos.map((item) => {
+        // Aquí NO reordenes, simplemente mapea en el mismo orden
         const numeros = [];
 
         const jovenNumber = jovenes.find((j) => j.himnoId === item.id)?.numero;
-
         const himnarioNumber = himnario.find(
           (h) => h.himnoId === item.id,
         )?.numero;
@@ -32,6 +32,7 @@ export function useHimnos(himnos, jovenes, himnario, suplementario) {
         if (jovenNumber) numeros.push(`J${jovenNumber}`);
         if (himnarioNumber) numeros.push(`H${himnarioNumber}`);
         if (suplementarioNumber) numeros.push(`S${suplementarioNumber}`);
+
         return {
           id: item.id,
           numero: numeros.length > 0 ? numeros.join(', ') : null,
@@ -43,24 +44,32 @@ export function useHimnos(himnos, jovenes, himnario, suplementario) {
   }, [tipoHimnario, jovenes, himnario, suplementario, himnos]);
 
   const filtrarHimnos = (input, favoritos = null) => {
-    return himnos.filter((himno) => {
-      if (favoritos && !favoritos.includes(himno.id)) return false;
+    // Ahora usarás directamente "obtenerIdsYNumeros"
+    const listado = obtenerIdsYNumeros; // Este ya es el array filtrado por 'tipoHimnario'
 
-      const match = obtenerIdsYNumeros.find((item) => item.id === himno.id);
-      if (!match) return false;
+    return listado
+      .map((item) => {
+        const himnoCompleto = himnos.find((h) => h.id === item.id);
+        if (!himnoCompleto) return null;
 
-      return (
-        himno.titulo.toLowerCase().includes(input.toLowerCase()) ||
-        (match.numero &&
-          match.numero.toString().toLowerCase().includes(input.toLowerCase()))
-      );
-    });
+        if (favoritos && !favoritos.includes(himnoCompleto.id)) return null;
+
+        const tituloMatch = himnoCompleto.titulo
+          .toLowerCase()
+          .includes(input.toLowerCase());
+        const numeroMatch =
+          item.numero &&
+          item.numero.toLowerCase().includes(input.toLowerCase());
+
+        return tituloMatch || numeroMatch ? himnoCompleto : null;
+      })
+      .filter(Boolean);
   };
 
   return {
     tipoHimnario,
     setTipoHimnario,
-    obtenerIdsYNumeros,
+    obtenerIdsYNumeros, // <- Este es tu array final
     filtrarHimnos,
   };
 }

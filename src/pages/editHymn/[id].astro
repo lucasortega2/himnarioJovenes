@@ -27,15 +27,32 @@ const [numeroSuplementario] = await db
   .select()
   .from(Suplementario)
   .where(eq(Suplementario.himnoId, himno.id));
-const [lastHymnIndex] = await db
+
+const currentHymnal = numeroHimnario ? Himnario : Jovenes;
+const currentHymn = numeroJovenes || numeroHimnario;
+
+const [nextHymn] = await db
   .select()
-  .from(Himnos)
-  .orderBy(desc(Himnos.id))
+  .from(currentHymnal)
+  .where(eq(currentHymnal.numero, currentHymn.numero + 1));
+
+const [prevHymn] = await db
+  .select()
+  .from(currentHymnal)
+  .where(eq(currentHymnal.numero, currentHymn.numero - 1));
+
+const [lastHymnNumber] = await db
+  .select()
+  .from(currentHymnal)
+  .orderBy(desc(currentHymnal.numero))
   .limit(1);
 
-const maxId = lastHymnIndex.id;
-const prevUrl = formatId - 1 > 0 ? `/editHymn/${formatId - 1}` : null;
-const nextUrl = formatId < maxId ? `/editHymn/${formatId + 1}` : null;
+const prevUrl =
+  prevHymn && prevHymn.numero - 1 > 0 ? `/editHymn/${prevHymn.himnoId}` : null;
+const nextUrl =
+  nextHymn && nextHymn.numero < lastHymnNumber.numero
+    ? `/editHymn/${nextHymn.himnoId}`
+    : null;
 ---
 
 <Layout>

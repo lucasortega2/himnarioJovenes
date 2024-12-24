@@ -1,4 +1,5 @@
 ---
+import { asc } from 'astro:db';
 import ButtonHome from '../components/ButtonHome.astro';
 import Layout from '../layouts/Layout.astro';
 import HimnoList from '@/components/HimnoList';
@@ -11,8 +12,8 @@ import {
 } from 'astro:db';
 export const prerender = true;
 const himnos = await db.select().from(dataHimnos);
-const himnario = await db.select().from(Himnario);
-const jovenes = await db.select().from(Jovenes);
+const himnario = await db.select().from(Himnario).orderBy(asc(Himnario.numero));
+const jovenes = await db.select().from(Jovenes).orderBy(asc(Jovenes.numero));
 const suplementario = await db.select().from(Suplementario);
 ---
 
