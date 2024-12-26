@@ -136,7 +136,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
         <div className="flex-1">
           <label
             htmlFor="numero"
-            className="block text-sm font-medium text-white"
+            className="block text-sm font-medium text-white  "
           >
             Número
           </label>
@@ -146,7 +146,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
             name="numero"
             required
             readOnly={isYoung}
-            className={`mt-1 block w-full px-3 py-2  border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent ${
+            className={`h-10  mt-1 block w-full px-3 py-2  border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent ${
               isYoung
                 ? 'bg-slate-600 cursor-not-allowed opacity-50'
                 : 'bg-slate-700'
@@ -162,7 +162,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
           <select
             name="himnario"
             id="himnario"
-            className="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            className="h-10 mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             value={himnario}
             onChange={(e) => setHimnario(e.target.value)}
           >
@@ -187,7 +187,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
             type="text"
             id="numero2"
             name="numero2"
-            className={`mt-1 block w-full px-3 py-2  border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent ${
+            className={`h-10 mt-1 block w-full px-3 py-2  border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent ${
               !isMainFieldsFilled || isYoung
                 ? 'bg-slate-600 cursor-not-allowed opacity-50'
                 : 'bg-slate-700'
@@ -207,7 +207,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
           <select
             name="himnario2"
             id="himnario2"
-            className={`mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent ${
+            className={`h-10 mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent ${
               !isMainFieldsFilled || isYoung
                 ? 'bg-slate-600 cursor-not-allowed opacity-50'
                 : 'bg-slate-700'
