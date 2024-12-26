@@ -175,8 +175,8 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
           </select>
         </div>
       </div>
-      <div className="flex gap-4">
-        <div className="flex-1">
+      <div className="flex gap-4 items-end">
+        <div className="flex-1 ">
           <label
             htmlFor="numero2"
             className="block text-sm font-medium text-white"
@@ -260,7 +260,7 @@ const FormAddHymn: React.FC<FormAddHymnProps> = ({
         type="submit"
         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
       >
-        Agregar Himno
+        {himno ? 'Editar himno' : 'Agregar himno'}
       </button>
     </form>
   );
